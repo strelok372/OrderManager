@@ -1,5 +1,6 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<Order>
+@{
+    //ViewData["Title"] = "Home Page";
 }
 
 <button>Create order</button>
@@ -8,14 +9,15 @@
         <th>Order number</th>
         <th>Provider</th>
         <th>Date</th>
-        <th>Price</th>
     </tr>
-    <tr>
-        <td>52359</td>
-        <td>Washington Co.</td>
-        <td>16.02.2004</td>
-        <td>1518$</td>
-        <td><button>Edit</button></td>
-        <td><button>Delete</button></td>
-    </tr>
+    @foreach (var order in Model)
+    {
+        <tr>
+            <td>@order.Number</td>
+            <td>@order.Date</td>
+            <td>@order.ProviderId</td>
+            <td><a href="~Home/Edit/@order.Id">Edit</a></td>
+            <td><a href="~Home/Delete/@order.Id">Delete</a></td>
+        </tr>
+    }
 </table>

@@ -10,15 +10,12 @@ namespace OrderManager.Services
     public class ApplicationContext : DbContext
     {
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Provider> Providers { get; set; }
 
-        public ApplicationContext()
+        public ApplicationContext(DbContextOptions<ApplicationContext> contextOptions) : base(contextOptions)
         {
             Database.EnsureCreated();
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=orders_local;Trusted_Connection=True;");
         }
     }
 }
