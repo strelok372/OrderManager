@@ -1,12 +1,84 @@
 ﻿@model OrderManager.Services.ApplicationContext
 @{
-    //ViewData["Title"] = "Home Page";
     var orders = Model.Orders.ToList();
     var providers = Model.Providers.ToList();
+    var orderItems = Model.OrderItems.ToList();
+    //Layout = null;
 }
+
 <form action="~/Home/Add/">
-    <button>Create order</button>
+    <button class="btn-primary">Create order</button>
 </form>
+
+<hr />
+
+<form action="~/Home/Filter/">
+    <table>
+        <tr>
+            <th>
+                Order Numbers
+            </th>
+            <th>
+                Order Date
+            </th>
+            <th>
+                Provider Name
+            </th>
+            <th>
+                Order Item Name
+            </th>
+            <th>
+                Order Item Unit
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <select id="example-getting-started" multiple size="3">
+                    @foreach (var order in orders)
+                    {
+                        <option>@order.Number</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select id="example-getting-started" multiple size="3">
+                    @foreach (var order in orders)
+                    {
+                        <option>@order.Date</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select id="example-getting-started" multiple size="3">
+                    @foreach (var provider in providers)
+                    {
+                        <option>@provider.Name</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select id="example-getting-started" multiple size="3">
+                    @foreach (var orderItem in orderItems)
+                    {
+                        <option>@orderItem.Name</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select id="example-getting-started" multiple size="3">
+                    @foreach (var orderItem in orderItems)
+                    {
+                        <option>@orderItem.Unit</option>
+                    }
+                </select>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="Filter" />
+</form>
+
+<hr />
+
 <table>
     <tr>
         <th>Order number</th>
@@ -18,7 +90,7 @@
         <tr onmousedown="~/Home/Show/@order">
             <td>@order.Number</td>
             <td>@order.Date</td>
-            <td>@providers.First(x => x.Id == order.ProviderId).Name</td>
+            <td>@providers.First(x => x.Id == order.Provider.Id).Name</td>
             <td><a href="~/Home/Edit/@order.Id">Edit</a></td>
             <td><a href="~/Home/Delete/@order.Id">Delete</a></td>
         </tr>
