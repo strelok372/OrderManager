@@ -1,23 +1,26 @@
-﻿@model IEnumerable<Order>
+﻿@model OrderManager.Services.ApplicationContext
 @{
     //ViewData["Title"] = "Home Page";
+    var orders = Model.Orders.ToList();
+    var providers = Model.Providers.ToList();
 }
-
-<button>Create order</button>
+<form action="~/Home/Add/">
+    <button>Create order</button>
+</form>
 <table>
     <tr>
         <th>Order number</th>
-        <th>Provider</th>
         <th>Date</th>
+        <th>Provider</th>
     </tr>
-    @foreach (var order in Model)
+    @foreach (var order in orders)
     {
-        <tr>
+        <tr onmousedown="~/Home/Show/@order">
             <td>@order.Number</td>
             <td>@order.Date</td>
-            <td>@order.ProviderId</td>
-            <td><a href="~Home/Edit/@order.Id">Edit</a></td>
-            <td><a href="~Home/Delete/@order.Id">Delete</a></td>
+            <td>@providers.First(x => x.Id == order.ProviderId).Name</td>
+            <td><a href="~/Home/Edit/@order.Id">Edit</a></td>
+            <td><a href="~/Home/Delete/@order.Id">Delete</a></td>
         </tr>
     }
 </table>

@@ -1,0 +1,46 @@
+﻿@model OrderManager.Models.Order
+
+@{
+    ViewData["Title"] = "EditOrder";
+}
+
+<h1>Edit Order</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">        
+        <form asp-action="Edit" asp-controller="Home">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label class="control-label">Number</label>
+                <input class="form-control" value="@Model.Number" name="Number"/>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Date</label>
+                <input type="datetime" class="form-control" value="@Model.Date" name="Date"/>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Provider</label>
+                <select size="1" class="form-control" name="ProviderId">
+                    @foreach (Provider provider in ViewBag.Providers) {
+                        <option>@provider.Name</option>
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
