@@ -25,12 +25,7 @@ namespace OrderManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<ApplicationContext>((optionbuilder) =>
-            {
-                string connectionString = Configuration.GetConnectionString("Default");
-                optionbuilder.UseSqlServer(connectionString);
-            });
-
+            services.AddDbContext<ApplicationContext>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
