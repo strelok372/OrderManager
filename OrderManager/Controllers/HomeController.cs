@@ -24,7 +24,7 @@ namespace OrderManager.Controllers
 
         public IActionResult Index()
         {
-            return View(Context.Orders);
+            return base.View(Context);
         }
 
         public IActionResult Privacy()
@@ -32,19 +32,48 @@ namespace OrderManager.Controllers
             return View();
         }
 
-        public IActionResult CreateEdit()
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            var model = id.HasValue ? Context.Orders.First(x => x.Id == id) : null;
+            ViewBag.Providers = Context.Providers.ToList();
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Order order)
+        {
+            Context.Orders.Update(order);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Add(Order order)
+        {
+            if (order != null) Context.Orders.Add(order);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Add()
         {
             return View();
         }
 
-        public void Delete()
-        {            
+        [HttpPost]
+        public IActionResult Delete(int? id)
+        {
+            if (id == null) return RedirectToAction("Index");
+            return null;
         }
 
-        public IActionResult Show()
+        public IActionResult Show(int? id)
         {
-            return View();
+            if (id == null) return null;
+            return View(Context.Orders.First(x => x.Id == id));
         }
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
