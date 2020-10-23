@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OrderManager.Entities;
 using OrderManager.Models;
 using OrderManager.Services;
 
@@ -22,8 +23,19 @@ namespace OrderManager.Controllers
             Context = context;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
+            var orders = Context.Orders.ToList();
+            ViewBag.Orders = orders;
+            return base.View(Context);
+        }
+
+        [HttpPost]
+        public IActionResult Index(Filters filters)
+        {
+            var orders = FilterService.Filter(filters, Context);
+            ViewBag.Orders = orders;
             return base.View(Context);
         }
 
@@ -72,8 +84,6 @@ namespace OrderManager.Controllers
             if (id == null) return null;
             return View(Context.Orders.First(x => x.Id == id));
         }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

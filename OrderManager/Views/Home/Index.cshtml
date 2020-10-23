@@ -1,10 +1,18 @@
 ﻿@model OrderManager.Services.ApplicationContext
 @{
+    List<Order> sortedOrders = ViewBag.Orders;
+
     var orders = Model.Orders.ToList();
     var providers = Model.Providers.ToList();
     var orderItems = Model.OrderItems.ToList();
-    //Layout = null;
+
+    var selOrdNumList = new SelectList(orders, "Id", "Number");
+    var selOrdDateList = new SelectList(orders, "Id", "Date");
+    var selProvNameList = new SelectList(providers, "Name", "Name");
+    var selOrderItemNameList = new SelectList(orderItems, "Name", "Name");
+    var selOrderItemUnitList = new SelectList(orderItems, "Unit", "Unit");
 }
+
 
 <form action="~/Home/Add/">
     <button class="btn-primary">Create order</button>
@@ -12,7 +20,7 @@
 
 <hr />
 
-<form action="~/Home/Filter/">
+<form method="post">
     <table>
         <tr>
             <th>
@@ -33,48 +41,28 @@
         </tr>
         <tr>
             <td>
-                <select id="example-getting-started" multiple size="3">
-                    @foreach (var order in orders)
-                    {
-                        <option>@order.Number</option>
-                    }
+                <select id="example-getting-started" multiple size="3" asp-items="selOrdNumList" name="OrderNumbersId">
                 </select>
             </td>
             <td>
-                <select id="example-getting-started" multiple size="3">
-                    @foreach (var order in orders)
-                    {
-                        <option>@order.Date</option>
-                    }
+                <select id="example-getting-started" multiple size="3" asp-items="selOrdDateList" name="OrderDatesId">
                 </select>
             </td>
             <td>
-                <select id="example-getting-started" multiple size="3">
-                    @foreach (var provider in providers)
-                    {
-                        <option>@provider.Name</option>
-                    }
+                <select id="example-getting-started" multiple size="3" asp-items="selProvNameList" name="ProviderNames">
                 </select>
             </td>
             <td>
-                <select id="example-getting-started" multiple size="3">
-                    @foreach (var orderItem in orderItems)
-                    {
-                        <option>@orderItem.Name</option>
-                    }
+                <select id="example-getting-started" multiple size="3" asp-items="selOrderItemNameList" name="OrderItemNames">
                 </select>
             </td>
             <td>
-                <select id="example-getting-started" multiple size="3">
-                    @foreach (var orderItem in orderItems)
-                    {
-                        <option>@orderItem.Unit</option>
-                    }
+                <select id="example-getting-started" multiple size="3" asp-items="selOrderItemUnitList" name="OrderItemUnits">
                 </select>
             </td>
         </tr>
     </table>
-    <input type="submit" value="Filter" />
+    <input type="submit" value="Filter"/>
 </form>
 
 <hr />
@@ -85,7 +73,7 @@
         <th>Date</th>
         <th>Provider</th>
     </tr>
-    @foreach (var order in orders)
+    @foreach (var order in sortedOrders)
     {
         <tr onmousedown="~/Home/Show/@order">
             <td>@order.Number</td>
