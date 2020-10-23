@@ -2,41 +2,48 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using BLL.Models;
+using BLL.Service;
+using DAL;
+using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OrderManager.Entities;
 using OrderManager.Models;
-using OrderManager.Services;
 
 namespace OrderManager.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IOrderService _orderService;
+        private readonly IProviderService _providerService;
 
-        public ApplicationContext Context { get; }
-
-        public HomeController(ILogger<HomeController> logger, ApplicationContext context)
+        public HomeController(ILogger<HomeController> logger, IOrderService orderService, IProviderService providerService)
         {
             _logger = logger;
-            Context = context;
+            _orderService = orderService;
+            _providerService = providerService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var orders = Context.Orders.ToList();
-            ViewBag.Orders = orders;
-            return base.View(Context);
+            var orders = await _orderService.GetAll(cancellationToken);
+            var model = IndexViewModel.Create(orders, null);
+            return base.View(model);
         }
 
         [HttpPost]
         public IActionResult Index(Filters filters)
         {
-            var orders = FilterService.Filter(filters, Context);
-            ViewBag.Orders = orders;
-            return base.View(Context);
+            var orders = _orderService.Filter(filters);
+            _providerService.GetAll(CancellationToken.None);
+            var model = IndexViewModel.Create(orders, null);
+            
+            return base.View(model);
         }
 
         public IActionResult Privacy()
@@ -45,24 +52,24 @@ namespace OrderManager.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, CancellationToken cancellationToken)
         {
-            var model = id.HasValue ? Context.Orders.First(x => x.Id == id) : null;
-            ViewBag.Providers = Context.Providers.ToList();
+            var model = await _orderService.Get(id, cancellationToken);
+            ViewBag.Providers = await _providerService.GetAll(cancellationToken);
             return View(model);
         }
 
         [HttpPost]
         public IActionResult Edit(Order order)
         {
-            Context.Orders.Update(order);
+            // Context.Orders.Update(order);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public IActionResult Add(Order order)
         {
-            if (order != null) Context.Orders.Add(order);
+            // if (order != null) Context.Orders.Add(order);
             return RedirectToAction("Index");
         }
 
@@ -79,10 +86,12 @@ namespace OrderManager.Controllers
             return null;
         }
 
-        public IActionResult Show(int? id)
+        public async Task<IActionResult> Show(int? id, CancellationToken cancellationToken)
         {
             if (id == null) return null;
-            return View(Context.Orders.First(x => x.Id == id));
+            await _orderService.Get(id, CancellationToken.None);
+            var order = await _orderService.Get(id, cancellationToken);
+            return View(order);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

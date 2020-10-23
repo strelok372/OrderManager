@@ -1,16 +1,11 @@
-﻿@model OrderManager.Services.ApplicationContext
+﻿@model OrderManager.Models.IndexViewModel
 @{
-    List<Order> sortedOrders = ViewBag.Orders;
 
-    var orders = Model.Orders.ToList();
-    var providers = Model.Providers.ToList();
-    var orderItems = Model.OrderItems.ToList();
-
-    var selOrdNumList = new SelectList(orders, "Id", "Number");
-    var selOrdDateList = new SelectList(orders, "Id", "Date");
-    var selProvNameList = new SelectList(providers, "Name", "Name");
-    var selOrderItemNameList = new SelectList(orderItems, "Name", "Name");
-    var selOrderItemUnitList = new SelectList(orderItems, "Unit", "Unit");
+    var selOrdNumList = new SelectList(Model.Orders, "Id", "Number");
+    var selOrdDateList = new SelectList(Model.Orders, "Id", "Date");
+    var selProvNameList = new SelectList(Model.Providers, "Name", "Name");
+    var selOrderItemNameList = new SelectList(Model.OrderItems, "Name", "Name");
+    var selOrderItemUnitList = new SelectList(Model.OrderItems, "Unit", "Unit");
 }
 
 
@@ -73,12 +68,12 @@
         <th>Date</th>
         <th>Provider</th>
     </tr>
-    @foreach (var order in sortedOrders)
+    @foreach (var order in Model.SortedOrders)
     {
         <tr onmousedown="~/Home/Show/@order">
             <td>@order.Number</td>
             <td>@order.Date</td>
-            <td>@providers.First(x => x.Id == order.Provider.Id).Name</td>
+            <td>@Model.Providers.First(x => x.Id == order.Provider.Id).Name</td>
             <td><a href="~/Home/Edit/@order.Id">Edit</a></td>
             <td><a href="~/Home/Delete/@order.Id">Delete</a></td>
         </tr>
