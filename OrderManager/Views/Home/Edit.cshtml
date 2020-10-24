@@ -1,4 +1,5 @@
-﻿@model OrderManager.Models.Order
+﻿@using DAL.Models
+@model ShowViewModel
 
 @{
     ViewData["Title"] = "EditOrder";
@@ -26,7 +27,7 @@
                 <select size="1" class="form-control" name="Provider">
                     @foreach (Provider provider in ViewBag.Providers)
                     {
-                        if (provider.Id == Model.Provider.Id)
+                        if (provider.Name == Model.Provider)
                         {
                             <option selected>@provider.Name</option>
                         }
@@ -38,6 +39,25 @@
                 </select>
                 <span class="text-danger"></span>
             </div>
+
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Unit</th>
+                    <th>Quantity</th>
+                    <th>Remove</th>
+                </tr>
+                @foreach (var orderItem in Model.OrderItems)
+                {
+                    <tr>
+                        <td><input value="@orderItem.Name" /> @orderItem.Name</td>
+                        <td>@orderItem.Unit</td>
+                        <td>@orderItem.Quantity</td>
+                        <td><a href="~/Home/OrderItem/Delete/@orderItem.Id">X</a></td>
+                    </tr>
+                }
+            </table>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

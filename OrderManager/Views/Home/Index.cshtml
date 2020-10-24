@@ -1,18 +1,21 @@
-﻿@model OrderManager.Services.ApplicationContext
+﻿@model OrderManager.Models.IndexViewModel
 @{
-    List<Order> sortedOrders = ViewBag.Orders;
 
-    var orders = Model.Orders.ToList();
-    var providers = Model.Providers.ToList();
-    var orderItems = Model.OrderItems.ToList();
-
-    var selOrdNumList = new SelectList(orders, "Id", "Number");
-    var selOrdDateList = new SelectList(orders, "Id", "Date");
-    var selProvNameList = new SelectList(providers, "Name", "Name");
-    var selOrderItemNameList = new SelectList(orderItems, "Name", "Name");
-    var selOrderItemUnitList = new SelectList(orderItems, "Unit", "Unit");
+    var selOrdNumList = new SelectList(Model.Orders, "Id", "Number");
+    var selOrdDateList = new SelectList(Model.Orders, "Id", "Date");
+    var selProvNameList = new SelectList(Model.Providers, "Name", "Name");
+    var selOrderItemNameList = new SelectList(Model.OrderItems, "Name", "Name");
+    var selOrderItemUnitList = new SelectList(Model.OrderItems, "Unit", "Unit");
 }
 
+<script>
+    $(document).ready(function () {
+        $("#orderTable tbody tr").on("click", function () {
+            alert("You clicked my <tr>!");
+            //get <td> element values here!!??
+        });
+    });
+</script>
 
 <form action="~/Home/Add/">
     <button class="btn-primary">Create order</button>
@@ -62,23 +65,23 @@
             </td>
         </tr>
     </table>
-    <input type="submit" value="Filter"/>
+    <input type="submit" value="Filter" />
 </form>
 
 <hr />
 
-<table>
+<table id="orderTable">
     <tr>
         <th>Order number</th>
         <th>Date</th>
         <th>Provider</th>
     </tr>
-    @foreach (var order in sortedOrders)
+    @foreach (var order in Model.SortedOrders)
     {
-        <tr onmousedown="~/Home/Show/@order">
+        <tr onclick="document.location='/Home/Show/@order.Id'" >
             <td>@order.Number</td>
             <td>@order.Date</td>
-            <td>@providers.First(x => x.Id == order.Provider.Id).Name</td>
+            <td>@Model.Providers.First(x => x.Id == order.Provider.Id).Name</td>
             <td><a href="~/Home/Edit/@order.Id">Edit</a></td>
             <td><a href="~/Home/Delete/@order.Id">Delete</a></td>
         </tr>
