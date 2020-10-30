@@ -5,6 +5,37 @@
     ViewData["Title"] = "EditOrder";
 }
 
+<script>
+    function addRow(tableID) {
+        let tableRef = document.getElementById(tableID);
+        let newRow = tableRef.insertRow(tableRef.rows.length - 1);
+        console.log(tableRef.rows.length - 1);
+
+        for (let i = 0; i < 4; i++) {
+            let newCell = newRow.insertCell(i);
+
+            let newInput;
+            if (i == 3) {
+                newInput = document.createElement("a");
+                let tempOnClick = "deleteRow('" + tableID + "', " + (tableRef.rows.length - 2) + ")";
+                newInput.onclick = tempOnClick;
+                newInput.href = "#";
+                newInput.text = "X";
+            } else {
+                newInput = document.createElement("input");
+            }
+
+            newCell.appendChild(newInput);
+        }
+    };
+
+    function deleteRow(tableID, rowNum) {
+        console.log("tries to delete row... " + rowNum + " on tableName: " + tableID);
+        let tableRef = document.getElementById(tableID);
+        tableRef.deleteRow(rowNum);
+    }
+</script>
+
 <h1>Edit Order</h1>
 <hr />
 <div class="row">
@@ -40,23 +71,31 @@
                 <span class="text-danger"></span>
             </div>
 
-            <table class="table">
+            <table class="table" id="order_items_table">
                 <tr>
                     <th>Name</th>
                     <th>Unit</th>
                     <th>Quantity</th>
                     <th>Remove</th>
                 </tr>
+                @{ int index = 0; }
                 @foreach (var orderItem in Model.OrderItems)
                 {
                     <tr>
-                        <td><input value="@orderItem.Name" /> @orderItem.Name</td>
-                        <td>@orderItem.Unit</td>
-                        <td>@orderItem.Quantity</td>
-                        <td><a href="~/Home/OrderItem/Delete/@orderItem.Id">X</a></td>
+                        <td><input value="@orderItem.Name" /></td>
+                        <td><input value="@orderItem.Unit" /></td>
+                        <td><input value="@orderItem.Quantity" /></td>
+                        <td><a onclick="deleteRow('order_items_table', )" href="#">X</a></td>
                     </tr>
+                    index++;
                 }
+                <tr>
+                    <td>
+                        <a href="#" onclick="addRow('order_items_table')">+</a>
+                    </td>
+                </tr>
             </table>
+
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -68,6 +107,7 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
